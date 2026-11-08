@@ -1,0 +1,13 @@
+{
+  "name": "arsenal-ux",
+  "owner": {
+    "name": "Arsenal UX"
+  },
+  "plugins": [
+    {
+      "name": "arsenal-ux",
+      "source": "./",
+      "description": "Pacote de skills de design: processo de ponta a ponta com um designer sênior ao lado."
+    }
+  ]
+}

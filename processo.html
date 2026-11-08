@@ -1,0 +1,634 @@
+<title>Arsenal UX</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: uma coluna de leitura com faixas largas para o diamante, a matriz e o timebox. Problema = teal, solução = âmbar. */
+:root{
+  --bg:#f6f7f8; --surface:#ffffff; --fg:#16202a; --muted:#5b6672; --line:#dde2e7;
+  --prob:#0f7c74; --prob-soft:#e2f2f0; --sol:#b8620e; --sol-soft:#fbeedd;
+  --accent:#1d4e89; --warn:#a4331f;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Instrument Sans", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f151b; --surface:#16202a; --fg:#e6ebef; --muted:#9aa6b2; --line:#283541;
+  --prob:#4cc2b6; --prob-soft:#123331; --sol:#f0a24c; --sol-soft:#3a2810;
+  --accent:#8db7ee; --warn:#f08a74; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f151b; --surface:#16202a; --fg:#e6ebef; --muted:#9aa6b2; --line:#283541;
+  --prob:#4cc2b6; --prob-soft:#123331; --sol:#f0a24c; --sol-soft:#3a2810;
+  --accent:#8db7ee; --warn:#f08a74; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55;margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-block:40px 80px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(30px,5vw,46px);font-weight:700;letter-spacing:-.01em}
+h2{font-size:clamp(22px,3vw,28px);font-weight:700}
+h3{font-size:19px;font-weight:700}
+p{margin:0;max-width:68ch}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:600}
+.lede{font-size:18px;color:var(--muted)}
+code,.sk{font-family:var(--mono);font-size:.86em}
+.sk{padding:1px 6px;border-radius:4px;background:var(--surface);border:1px solid var(--line);white-space:nowrap}
+section{display:flex;flex-direction:column;gap:18px}
+
+/* diamante */
+.dd{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;overflow-x:auto}
+.dd svg{display:block;min-width:720px;width:100%;height:auto}
+.dd text{font-family:var(--body);fill:var(--fg)}
+
+/* fases */
+.phases{display:flex;flex-direction:column;gap:14px}
+.phase{display:grid;grid-template-columns:64px 1fr;gap:18px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px}
+.phase .n{font-family:var(--display);font-size:34px;font-weight:700;line-height:1}
+.phase.p .n{color:var(--prob)} .phase.s .n{color:var(--sol)}
+.phase .body{display:flex;flex-direction:column;gap:12px;min-width:0}
+.phase .q{font-size:17px;font-weight:500}
+.cols{display:grid;grid-template-columns:1.3fr 1fr;gap:20px}
+.cols ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.lbl{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-bottom:4px}
+.skills{display:flex;flex-wrap:wrap;gap:6px}
+.own{border-color:currentColor}
+.phase.p .own{color:var(--prob)} .phase.s .own{color:var(--sol)}
+.say{border-left:3px solid var(--line);padding:4px 0 4px 14px;color:var(--muted);font-size:15px}
+.say b{color:var(--fg);font-weight:600}
+.src{font-family:var(--mono);font-size:12px;color:var(--accent)}
+
+/* dados */
+.data3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.card .when{font-family:var(--display);font-weight:700;font-size:18px}
+.card .tag{font-size:12px;color:var(--muted)}
+.card ul{margin:0;padding-left:18px}
+.rule{background:var(--prob-soft);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:6px}
+
+/* matriz */
+.mx{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:760px}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:center;font-size:14px}
+th{font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+th.pp{color:var(--prob)} th.ss{color:var(--sol)}
+td.name{text-align:left;font-family:var(--mono);font-size:13px;white-space:nowrap}
+td.role{text-align:left;color:var(--muted);font-size:13px}
+tr.grp td{background:var(--bg);text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;padding:8px 12px}
+.d{display:inline-block;width:14px;height:14px;border-radius:50%}
+.d.o{background:var(--fg)} .d.a{border:2px solid var(--muted)}
+.bar{height:10px;border-radius:5px;background:linear-gradient(90deg,var(--prob) 0 50%,var(--sol) 50% 100%)}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--muted);align-items:center}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+tbody tr.row{cursor:pointer}
+tbody tr.row:hover td,tbody tr.row.on td{background:var(--prob-soft)}
+tbody tr.row:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+
+/* timebox */
+.tb{display:flex;flex-direction:column;gap:16px}
+.prof{display:grid;grid-template-columns:220px 1fr;gap:14px;align-items:center}
+.prof .who b{display:block;font-family:var(--display);font-size:16px}
+.prof .who small{color:var(--muted);font-size:13px}
+.stack{display:flex;height:34px;border-radius:6px;overflow:hidden;min-width:0}
+.stack div{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;overflow:hidden;white-space:nowrap;font-variant-numeric:tabular-nums}
+.f1{background:#0b5e58}.f2{background:#0f7c74}.f3{background:#3a9d94}.f4{background:#b8620e}.f5{background:#d07f2a}.f6{background:#8c4a0b}
+.keys{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--muted)}
+.keys i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.ck{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ck .card b{font-family:var(--display);font-size:22px}
+.note{font-size:13px;color:var(--muted)}
+.ex{display:inline-block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;background:var(--sol-soft);color:var(--sol);padding:2px 8px;border-radius:4px;font-weight:600}
+
+@media (max-width:760px){
+  .cols,.data3,.ck{grid-template-columns:1fr}
+  .phase{grid-template-columns:1fr;gap:8px}
+  .prof{grid-template-columns:1fr;gap:6px}
+}
+@media (prefers-reduced-motion:no-preference){tbody tr.row td{transition:background-color .15s ease-out}}
+
+/* abas */
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tabs a{padding:10px 16px;text-decoration:none;color:var(--muted);font-weight:600;border-bottom:3px solid transparent;margin-bottom:-1px}
+.tabs a[aria-current="page"]{color:var(--fg);border-color:var(--accent)}
+.tabs a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.view{display:flex;flex-direction:column;gap:56px}
+
+/* revisão */
+.rv-top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:12px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--line)}
+.prog{height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--prob);width:0}
+.rv-meta{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;font-size:14px;color:var(--muted)}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.filters button,.st button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:5px 12px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.notice{font-size:13px;padding:10px 14px;border-radius:8px;background:var(--sol-soft);color:var(--fg)}
+.rv-skill{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px}
+.rv-head{display:grid;grid-template-columns:56px 1fr;gap:14px;align-items:center}
+.rv-head svg{width:56px;height:56px}
+.rv-head h3{font-size:21px}
+.chip{display:inline-block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;padding:2px 8px;border-radius:4px;background:var(--bg);color:var(--muted);margin-left:6px;vertical-align:3px}
+.rv-body{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+.rv-body .ill{background:var(--bg);border-radius:10px;padding:14px;overflow-x:auto}
+.rv-body .ill svg{display:block;width:100%;height:auto;min-width:300px}
+.rv-body .ill text{font-family:var(--body)}
+.items{display:flex;flex-direction:column;gap:10px}
+.item{border:1px solid var(--line);border-left:4px solid var(--line);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:8px;background:var(--surface)}
+.item[data-st="ok"]{border-left-color:var(--prob)}
+.item[data-st="ajustar"]{border-left-color:var(--sol)}
+.item[data-st="duvida"]{border-left-color:var(--accent)}
+.item h4{margin:0;font-size:15px;font-family:var(--body);font-weight:600}
+.item p{font-size:14px;color:var(--muted)}
+.org{font-family:var(--mono);font-size:11px;padding:1px 6px;border-radius:4px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.org.pratica{color:var(--sol);border-color:var(--sol)}
+.org.externo{color:var(--accent);border-color:var(--accent)}
+.st{display:flex;gap:6px;flex-wrap:wrap}
+.st button[aria-pressed="true"][data-v="ok"]{background:var(--prob);border-color:var(--prob);color:#fff}
+.st button[aria-pressed="true"][data-v="ajustar"]{background:var(--sol);border-color:var(--sol);color:#fff}
+.st button[aria-pressed="true"][data-v="duvida"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.st button:focus-visible,.filters button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.item textarea{font:inherit;font-size:14px;width:100%;min-height:56px;border:1px solid var(--line);border-radius:6px;padding:8px 10px;background:var(--bg);color:var(--fg);resize:vertical}
+.saved{font-size:12px;color:var(--muted);min-height:1em}
+@media (max-width:760px){.rv-body{grid-template-columns:1fr}}
+</style>
+
+<div class="wrap">
+
+<header style="display:flex;flex-direction:column;gap:14px">
+  <div class="eyebrow">Pacote de skills de design · v1 do processo</div>
+  <h1>O processo de design de ponta a ponta, e onde cada skill entra</h1>
+  <p class="lede">O pacote funciona como um designer sênior sentado ao lado de quem está desenhando. Ele percorre seis fases. Em cada uma, uma skill é a dona da fase e outras ajudam. O <span class="sk">parceiro-senior</span> conduz tudo: sabe em que fase a demanda está e avisa quando alguém pula uma etapa.</p>
+  <nav class="tabs" aria-label="Seções">
+    <a href="#processo" id="tab-processo">Processo</a>
+    <a href="#revisao" id="tab-revisao">Revisão das skills</a>
+  </nav>
+</header>
+
+<div class="view" id="view-revisao" hidden>
+  <div class="rv-top">
+    <div class="rv-meta"><b id="rv-count" style="color:var(--fg)">0 de 0 revisados</b><span id="rv-break"></span><span class="saved" id="rv-sync"></span></div>
+    <div class="prog" role="progressbar" aria-label="Progresso da revisão" aria-valuemin="0" aria-valuemax="100" id="rv-prog"><i></i></div>
+    <div class="filters" role="group" aria-label="Filtrar">
+      <button type="button" data-f="todos" aria-pressed="true">Todos</button>
+      <button type="button" data-f="pendente" aria-pressed="false">Pendentes</button>
+      <button type="button" data-f="ajustar" aria-pressed="false">Ajustar</button>
+      <button type="button" data-f="duvida" aria-pressed="false">Dúvida</button>
+      <button type="button" data-f="pratica" aria-pressed="false">Só proposta do pacote</button>
+    </div>
+  </div>
+  <section style="gap:12px">
+    <div class="eyebrow">Como revisar</div>
+    <h2>Os pontos que pedem a sua decisão</h2>
+    <p>Cada skill traz uma ilustração do que ela faz e os pontos para revisar. A etiqueta mostra a origem de cada ponto: <span class="org">pós</span> é material do curso, <span class="org">artigo</span> é um texto referenciado pelo curso, <span class="org externo">externo</span> é fonte de fora da pós e <span class="org pratica">prática</span> é proposta minha, sem fonte. Os pontos marcados como prática são os que mais precisam do seu olho. Marque <b>Aprovar</b>, <b>Ajustar</b> ou <b>Dúvida</b> e escreva no campo o que mudaria. O comentário é salvo sozinho quando você sai do campo.</p>
+    <p class="notice" id="rv-notice" hidden></p>
+  </section>
+  <div id="rv-list" style="display:flex;flex-direction:column;gap:18px"></div>
+</div>
+
+<div class="view" id="view-processo">
+
+<section>
+  <div class="eyebrow">Visão geral</div>
+  <h2>Dois diamantes: primeiro o problema, depois a solução</h2>
+  <div class="dd">
+    <svg viewBox="0 0 1000 250" role="img" aria-label="Duplo diamante com seis fases: Entender, Investigar e Definir no diamante do problema; Criar, Validar e Entregar no diamante da solução.">
+      <polygon points="20,120 250,25 480,120 250,215" fill="var(--prob-soft)" stroke="var(--prob)" stroke-width="2"/>
+      <polygon points="520,120 750,25 980,120 750,215" fill="var(--sol-soft)" stroke="var(--sol)" stroke-width="2"/>
+      <text x="250" y="16" text-anchor="middle" font-size="13" font-weight="600" fill="var(--prob)" style="fill:var(--prob)">PROBLEMA · abrir e depois fechar</text>
+      <text x="750" y="16" text-anchor="middle" font-size="13" font-weight="600" style="fill:var(--sol)">SOLUÇÃO · abrir e depois fechar</text>
+      <g font-size="15" font-weight="600">
+        <text x="105" y="118" text-anchor="middle">1 Entender</text>
+        <text x="250" y="118" text-anchor="middle">2 Investigar</text>
+        <text x="395" y="118" text-anchor="middle">3 Definir</text>
+        <text x="605" y="118" text-anchor="middle">4 Criar</text>
+        <text x="750" y="118" text-anchor="middle">5 Validar</text>
+        <text x="895" y="118" text-anchor="middle">6 Entregar</text>
+      </g>
+      <g font-size="12" style="fill:var(--muted)">
+        <text x="105" y="138" text-anchor="middle" style="fill:var(--muted)">qual é o problema?</text>
+        <text x="250" y="138" text-anchor="middle" style="fill:var(--muted)">o que já sabemos?</text>
+        <text x="395" y="138" text-anchor="middle" style="fill:var(--muted)">o que vamos testar?</text>
+        <text x="605" y="138" text-anchor="middle" style="fill:var(--muted)">como resolver?</text>
+        <text x="750" y="138" text-anchor="middle" style="fill:var(--muted)">funciona?</text>
+        <text x="895" y="138" text-anchor="middle" style="fill:var(--muted)">deu certo?</text>
+      </g>
+      <line x1="480" y1="120" x2="520" y2="120" stroke="var(--muted)" stroke-width="2" stroke-dasharray="4 4"/>
+      <text x="500" y="238" text-anchor="middle" font-size="12" style="fill:var(--muted)">o resultado medido na fase 6 vira evidência da próxima demanda (volta para a fase 2)</text>
+    </svg>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Fase a fase</div>
+  <h2>O que acontece em cada fase</h2>
+  <p>Cada fase traz a pergunta central, o que o sênior faz, o que sai dela e as skills que atuam. O exemplo que acompanha as fases é uma demanda inventada: <b>"Marcas abandonam a criação de campanha no meio", com prazo de 1 semana</b>. <span class="ex">números ilustrativos</span></p>
+
+  <div class="phases">
+
+    <article class="phase p">
+      <div class="n">1</div>
+      <div class="body">
+        <h3>Entender a demanda</h3>
+        <p class="q">Qual é o problema de verdade, para quem, e como vamos saber que resolvemos?</p>
+        <div class="cols">
+          <div><div class="lbl">O sênior</div><ul>
+            <li>Separa o problema da solução que veio no pedido ("redesenhar o formulário" é uma solução)</li>
+            <li>Faz de 3 a 5 perguntas, começando pelas que mais mudam a resposta</li>
+            <li>Mapeia quem decide e quem é afetado</li>
+            <li>Pergunta o prazo e a restrição principal</li>
+          </ul></div>
+          <div><div class="lbl">Sai daqui</div><ul><li>Problem statement</li><li>Stakeholders</li><li>Prazo e restrições</li></ul>
+            <div class="lbl" style="margin-top:12px">Skills</div>
+            <div class="skills"><span class="sk own">entender-demanda</span></div></div>
+        </div>
+        <div class="say"><b>Sênior:</b> "Quem abandona, marcas novas ou todas? Em qual etapa? Antes de redesenhar o formulário, quero confirmar que o problema está nele."</div>
+      </div>
+    </article>
+
+    <article class="phase p">
+      <div class="n">2</div>
+      <div class="body">
+        <h3>Investigar o que já existe</h3>
+        <p class="q">O que os dados e as fontes que já temos dizem sobre isso?</p>
+        <div class="cols">
+          <div><div class="lbl">O sênior</div><ul>
+            <li><b>Vai buscar sem esperar pedido</b>: analytics, tickets, reviews, pesquisas anteriores, benchmark, desk research</li>
+            <li><b>Cita a fonte de cada dado</b> para o designer conferir</li>
+            <li>Confere se o dado faz sentido: amostra, período, erro de tracking, correlação × causa</li>
+            <li>Se faltar dado, sugere a coleta rápida mais barata, como um formulário ou 5 conversas com usuários escolhidos por cohort</li>
+          </ul></div>
+          <div><div class="lbl">Sai daqui</div><ul><li>Tabela de evidências (dado · fonte · confiança)</li><li>Lacunas que ainda precisam de pesquisa</li></ul>
+            <div class="lbl" style="margin-top:12px">Skills</div>
+            <div class="skills"><span class="sk own">investigar-evidencias</span><span class="sk">pesquisar</span><span class="sk">vieses-cognitivos</span><span class="sk">contexto-empresa</span></div></div>
+        </div>
+        <div class="say"><b>Sênior:</b> "Puxei o funil de criação dos últimos 90 dias: 62% param na etapa de segmentação <span class="src">[fonte: Analytics › evento campaign_step]</span>. Li também 40 tickets da tag 'campanha', e 18 dizem 'não entendi o público' <span class="src">[fonte: Zendesk]</span>. Ponto de atenção: confira se o evento da etapa 3 dispara certo, porque o pico pode ser erro de tracking."</div>
+      </div>
+    </article>
+
+    <article class="phase p">
+      <div class="n">3</div>
+      <div class="body">
+        <h3>Definir hipóteses e planejar o tempo</h3>
+        <p class="q">O que vamos apostar, como vamos medir e como distribuímos o prazo?</p>
+        <div class="cols">
+          <div><div class="lbl">O sênior</div><ul>
+            <li>Transforma palpites em hipóteses que dá para testar, cada uma com métrica e com o sinal de que estamos errados</li>
+            <li>Define <b>agora</b> a métrica de sucesso que vai ser medida na fase 6</li>
+            <li>Classifica o perfil do projeto e distribui o tempo entre as fases (veja o timebox abaixo)</li>
+            <li>Marca os checkpoints de feedback: quando, com quem e como</li>
+          </ul></div>
+          <div><div class="lbl">Sai daqui</div><ul><li>Hipóteses priorizadas</li><li>Métrica de sucesso e linha de base</li><li>Cronograma com checkpoints</li></ul>
+            <div class="lbl" style="margin-top:12px">Skills</div>
+            <div class="skills"><span class="sk own">definir-hipoteses</span><span class="sk own">planejar-timebox</span><span class="sk">vieses-cognitivos</span></div></div>
+        </div>
+        <div class="say"><b>Sênior:</b> "H1: mostrar uma estimativa de alcance enquanto a marca monta o público aumenta a conclusão da etapa 3 (hoje em 38%). Estaremos errados se a conclusão não subir pelo menos 10 p.p. O problema está claro e a solução é nova, então o tempo vai mais para criar e testar. Com 1 semana, cabem 2 checkpoints."</div>
+      </div>
+    </article>
+
+    <article class="phase s">
+      <div class="n">4</div>
+      <div class="body">
+        <h3>Criar</h3>
+        <p class="q">Como resolvemos, usando o que o design system já oferece?</p>
+        <div class="cols">
+          <div><div class="lbl">O sênior</div><ul>
+            <li>Escolhe a fidelidade certa para o momento (low-fi para explorar, hi-fi para testar)</li>
+            <li>Busca padrões de tela parecidos e componentes do DS antes de inventar</li>
+            <li>Revisa enquanto você desenha: heurísticas, vieses, acessibilidade</li>
+          </ul></div>
+          <div><div class="lbl">Sai daqui</div><ul><li>Variações de solução</li><li>Protótipo para testar</li></ul>
+            <div class="lbl" style="margin-top:12px">Skills</div>
+            <div class="skills"><span class="sk own">ui-craft</span><span class="sk">heuristicas</span><span class="sk">vieses-cognitivos</span><span class="sk">acessibilidade</span><span class="sk">contexto-empresa</span></div></div>
+        </div>
+        <div class="say"><b>Sênior:</b> "Começa com 3 variações em low-fi. O DS já tem um componente de 'estimativa em tempo real'. Cuidado com a ancoragem: o primeiro número que a marca vê vira referência."</div>
+      </div>
+    </article>
+
+    <article class="phase s">
+      <div class="n">5</div>
+      <div class="body">
+        <h3>Validar</h3>
+        <p class="q">Funciona para as pessoas reais e passa nas lentes de qualidade?</p>
+        <div class="cols">
+          <div><div class="lbl">O sênior</div><ul>
+            <li>Escolhe o teste que cabe no prazo: guerrilha, teste não moderado, 5 usuários, first-click</li>
+            <li>Recruta por cohort a partir dos dados da fase 2</li>
+            <li>Gera o roteiro e o template de síntese</li>
+            <li>Faz a revisão heurística e de acessibilidade com severidade e o trade-off de cada achado</li>
+          </ul></div>
+          <div><div class="lbl">Sai daqui</div><ul><li>Achados priorizados</li><li>Ajustes antes do handoff</li><li>Status das hipóteses</li></ul>
+            <div class="lbl" style="margin-top:12px">Skills</div>
+            <div class="skills"><span class="sk own">pesquisar</span><span class="sk own">heuristicas</span><span class="sk own">acessibilidade</span><span class="sk">vieses-cognitivos</span><span class="sk">ui-craft</span></div></div>
+        </div>
+        <div class="say"><b>Sênior:</b> "Teste não moderado com 6 marcas, 2 de cada cohort (novas, médias, power users) da lista de 30 que montei. Na revisão heurística saíram 2 achados ALTO e 1 CRÍTICO de contraste."</div>
+      </div>
+    </article>
+
+    <article class="phase s">
+      <div class="n">6</div>
+      <div class="body">
+        <h3>Entregar e medir</h3>
+        <p class="q">Está pronto para o dev, e como vamos saber se deu certo depois do lançamento?</p>
+        <div class="cols">
+          <div><div class="lbl">O sênior</div><ul>
+            <li>Roda o checklist de handoff: estados vazio, erro e loading, responsivo, edge cases, specs</li>
+            <li>Lista os eventos que precisam ser instrumentados para medir as hipóteses</li>
+            <li>Marca a data de leitura do resultado e fecha cada hipótese como confirmada ou derrubada</li>
+          </ul></div>
+          <div><div class="lbl">Sai daqui</div><ul><li>Pacote de handoff</li><li>Plano de medição</li><li>Aprendizado registrado</li></ul>
+            <div class="lbl" style="margin-top:12px">Skills</div>
+            <div class="skills"><span class="sk own">entregar-e-medir</span><span class="sk">acessibilidade</span><span class="sk">contexto-empresa</span></div></div>
+        </div>
+        <div class="say"><b>Sênior:</b> "Faltam os estados de erro e vazio. Instrumentar o evento audience_estimate_viewed. Em 30 dias comparamos a conclusão da etapa 3 com a linha de base de 38%."</div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">O que gerou a confusão</div>
+  <h2>Dados aparecem em três momentos diferentes</h2>
+  <p>A antiga skill "plano de dados" misturava três coisas. Agora cada momento tem uma skill dona.</p>
+  <div class="data3">
+    <div class="card"><div class="tag">Fase 2 · antes de desenhar</div><div class="when">O que já existe</div>
+      <ul><li>Analytics, funil, tickets, reviews</li><li>Pesquisas anteriores, desk research, benchmark</li></ul>
+      <div class="skills"><span class="sk">investigar-evidencias</span></div></div>
+    <div class="card"><div class="tag">Fases 2 e 5 · quando falta dado</div><div class="when">O que geramos</div>
+      <ul><li>Formulário quanti, entrevistas por cohort</li><li>Teste de usabilidade, first-click, card sorting</li></ul>
+      <div class="skills"><span class="sk">pesquisar</span></div></div>
+    <div class="card"><div class="tag">Fases 3 e 6 · depois de lançar</div><div class="when">Como saberemos se deu certo</div>
+      <ul><li>Métrica de sucesso e linha de base (fase 3)</li><li>Eventos instrumentados e leitura do resultado (fase 6)</li></ul>
+      <div class="skills"><span class="sk">definir-hipoteses</span><span class="sk">entregar-e-medir</span></div></div>
+  </div>
+  <div class="rule">
+    <b>Regra para todo dado</b>
+    <p>O sênior busca o dado sem esperar pedido e <b>sempre diz de onde ele veio</b> (sistema, evento, período, link), para o designer conferir. Cada dado também leva um nível de confiança: dado da empresa, pesquisa nossa, estudo publicado, heurística ou opinião.</p>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Mapa</div>
+  <h2>Onde cada skill atua</h2>
+  <div class="legend"><span><i class="d o"></i> dona da fase</span><span><i class="d a"></i> apoio</span><span>Clique numa linha para destacar a skill</span></div>
+  <div class="mx">
+    <table>
+      <thead><tr><th style="text-align:left">Skill</th><th style="text-align:left">Papel</th><th class="pp">1 Entender</th><th class="pp">2 Investigar</th><th class="pp">3 Definir</th><th class="ss">4 Criar</th><th class="ss">5 Validar</th><th class="ss">6 Entregar</th></tr></thead>
+      <tbody>
+        <tr class="grp"><td colspan="8">Condutor</td></tr>
+        <tr class="row" tabindex="0"><td class="name">parceiro-senior</td><td class="role">conduz o fluxo, mantém o projeto.md, chama as skills</td><td colspan="6"><div class="bar"></div></td></tr>
+        <tr class="grp"><td colspan="8">Processo · uma skill por fase</td></tr>
+        <tr class="row" tabindex="0"><td class="name">entender-demanda</td><td class="role">perguntas, problema, stakeholders</td><td><i class="d o"></i></td><td></td><td><i class="d a"></i></td><td></td><td></td><td></td></tr>
+        <tr class="row" tabindex="0"><td class="name">investigar-evidencias</td><td class="role">busca dados existentes e cita a fonte</td><td></td><td><i class="d o"></i></td><td></td><td></td><td><i class="d a"></i></td><td><i class="d a"></i></td></tr>
+        <tr class="row" tabindex="0"><td class="name">definir-hipoteses</td><td class="role">hipóteses e métrica de sucesso</td><td></td><td></td><td><i class="d o"></i></td><td></td><td></td><td><i class="d a"></i></td></tr>
+        <tr class="row" tabindex="0"><td class="name">planejar-timebox</td><td class="role">perfil do projeto, tempo, checkpoints</td><td></td><td></td><td><i class="d o"></i></td><td><i class="d a"></i></td><td><i class="d a"></i></td><td></td></tr>
+        <tr class="row" tabindex="0"><td class="name">ui-craft</td><td class="role">fidelidade, padrões, componentes, uso do DS</td><td></td><td></td><td></td><td><i class="d o"></i></td><td><i class="d a"></i></td><td></td></tr>
+        <tr class="row" tabindex="0"><td class="name">entregar-e-medir</td><td class="role">handoff e plano de medição</td><td></td><td></td><td><i class="d a"></i></td><td></td><td></td><td><i class="d o"></i></td></tr>
+        <tr class="grp"><td colspan="8">Caixa de ferramentas · usada em várias fases</td></tr>
+        <tr class="row" tabindex="0"><td class="name">pesquisar</td><td class="role">métodos, recrutamento por cohort, roteiros, síntese</td><td></td><td><i class="d a"></i></td><td></td><td></td><td><i class="d o"></i></td><td></td></tr>
+        <tr class="grp"><td colspan="8">Lentes · avaliam o que está sendo feito</td></tr>
+        <tr class="row" tabindex="0"><td class="name">heuristicas</td><td class="role">Nielsen, Leis de UX, Gestalt</td><td></td><td></td><td></td><td><i class="d a"></i></td><td><i class="d o"></i></td><td></td></tr>
+        <tr class="row" tabindex="0"><td class="name">vieses-cognitivos</td><td class="role">no produto, no time e na pesquisa, com checagem ética</td><td></td><td><i class="d a"></i></td><td><i class="d a"></i></td><td><i class="d a"></i></td><td><i class="d a"></i></td><td></td></tr>
+        <tr class="row" tabindex="0"><td class="name">acessibilidade</td><td class="role">WCAG 2.2 AA</td><td></td><td></td><td></td><td><i class="d a"></i></td><td><i class="d o"></i></td><td><i class="d a"></i></td></tr>
+        <tr class="grp"><td colspan="8">Ponte com a empresa</td></tr>
+        <tr class="row" tabindex="0"><td class="name">contexto-empresa</td><td class="role">fontes de dados, DS, métricas oficiais</td><td></td><td><i class="d a"></i></td><td></td><td><i class="d a"></i></td><td></td><td><i class="d a"></i></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">São 12 skills. Os comandos do designer (<code>/nova-demanda</code>, <code>/revisar-tela</code>, <code>/plano-pesquisa</code>, <code>/handoff</code>) são atalhos que entram direto numa fase.</p>
+</section>
+
+<section>
+  <div class="eyebrow">Fase 3 em detalhe</div>
+  <h2>Timebox: o tempo vai para onde está o risco</h2>
+  <p>A <span class="sk">planejar-timebox</span> classifica a demanda em duas perguntas: <b>o problema está claro?</b> e <b>a solução já existe em algum lugar?</b> Depois distribui o prazo entre as seis fases. Uma solução visualmente nova puxa tempo para criar e validar. Um problema obscuro puxa tempo para investigar.</p>
+  <div class="tb">
+    <div class="prof"><div class="who"><b>Executar</b><small>problema claro · solução conhecida</small></div>
+      <div class="stack"><div class="f1" style="width:5%"></div><div class="f2" style="width:5%"></div><div class="f3" style="width:5%"></div><div class="f4" style="width:55%">Criar 55%</div><div class="f5" style="width:15%">15%</div><div class="f6" style="width:15%">15%</div></div></div>
+    <div class="prof"><div class="who"><b>Explorar visual</b><small>problema claro · solução nova</small></div>
+      <div class="stack"><div class="f1" style="width:5%"></div><div class="f2" style="width:10%">10%</div><div class="f3" style="width:5%"></div><div class="f4" style="width:45%">Criar 45%</div><div class="f5" style="width:25%">Validar 25%</div><div class="f6" style="width:10%">10%</div></div></div>
+    <div class="prof"><div class="who"><b>Investigar</b><small>problema obscuro · solução conhecida</small></div>
+      <div class="stack"><div class="f1" style="width:15%">15%</div><div class="f2" style="width:35%">Investigar 35%</div><div class="f3" style="width:10%">10%</div><div class="f4" style="width:20%">20%</div><div class="f5" style="width:10%">10%</div><div class="f6" style="width:10%">10%</div></div></div>
+    <div class="prof"><div class="who"><b>Descobrir</b><small>problema obscuro · solução nova</small></div>
+      <div class="stack"><div class="f1" style="width:10%">10%</div><div class="f2" style="width:25%">Investigar 25%</div><div class="f3" style="width:10%">10%</div><div class="f4" style="width:25%">Criar 25%</div><div class="f5" style="width:20%">20%</div><div class="f6" style="width:10%">10%</div></div></div>
+    <div class="keys"><span><i class="f1"></i>Entender</span><span><i class="f2"></i>Investigar</span><span><i class="f3"></i>Definir</span><span><i class="f4"></i>Criar</span><span><i class="f5"></i>Validar</span><span><i class="f6"></i>Entregar</span></div>
+  </div>
+  <div class="ck">
+    <div class="card"><div class="tag">Prazo de 3 dias</div><b>1 checkpoint</b><p>Validar o conceito com o stakeholder antes do hi-fi.</p></div>
+    <div class="card"><div class="tag">Prazo de 1 semana</div><b>2 checkpoints</b><p>Conceito com o stakeholder e hi-fi com usuários (teste rápido).</p></div>
+    <div class="card"><div class="tag">Prazo de 3 semanas</div><b>3 a 4 checkpoints</b><p>Enquadramento, low-fi, hi-fi com usuários e revisão com o dev antes do handoff.</p></div>
+  </div>
+  <p class="note">As porcentagens são um ponto de partida para você ajustar com a sua experiência.</p>
+</section>
+
+</div>
+</div>
+
+<script>
+document.querySelectorAll('tbody tr.row').forEach(function(r){
+  function t(){var on=r.classList.contains('on');document.querySelectorAll('tbody tr.row.on').forEach(function(x){x.classList.remove('on')});if(!on)r.classList.add('on');}
+  r.addEventListener('click',t);
+  r.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();t();}});
+});
+
+/* ---------- abas ---------- */
+function route(){
+  var h=(location.hash||'#processo').slice(1); if(h!=='revisao') h='processo';
+  document.getElementById('view-processo').hidden = h!=='processo';
+  document.getElementById('view-revisao').hidden = h!=='revisao';
+  document.getElementById('tab-processo').setAttribute('aria-current', h==='processo'?'page':'false');
+  document.getElementById('tab-revisao').setAttribute('aria-current', h==='revisao'?'page':'false');
+}
+window.addEventListener('hashchange',route); route();
+
+/* ---------- ilustrações ---------- */
+var T='style="fill:var(--fg)"', M='style="fill:var(--muted)"', P='style="fill:var(--prob)"', S='style="fill:var(--sol)"', A='style="fill:var(--accent)"';
+function txt(x,y,s,st,extra){return '<text x="'+x+'" y="'+y+'" font-size="'+(extra&&extra.fs||12)+'" '+(extra&&extra.anchor?'text-anchor="'+extra.anchor+'"':'')+' '+(extra&&extra.w?'font-weight="'+extra.w+'"':'')+' '+st+'>'+s+'</text>';}
+var ICON={
+ senior:'<svg viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="20" r="9" style="fill:none;stroke:var(--accent);stroke-width:3"/><path d="M12 48c2-10 9-15 16-15s14 5 16 15" style="fill:none;stroke:var(--accent);stroke-width:3"/></svg>',
+ p:'<svg viewBox="0 0 56 56" aria-hidden="true"><rect x="6" y="6" width="44" height="44" rx="10" style="fill:var(--prob-soft)"/><circle cx="28" cy="28" r="10" style="fill:none;stroke:var(--prob);stroke-width:3"/></svg>',
+ s:'<svg viewBox="0 0 56 56" aria-hidden="true"><rect x="6" y="6" width="44" height="44" rx="10" style="fill:var(--sol-soft)"/><rect x="18" y="18" width="20" height="20" rx="3" style="fill:none;stroke:var(--sol);stroke-width:3"/></svg>',
+ lens:'<svg viewBox="0 0 56 56" aria-hidden="true"><circle cx="24" cy="24" r="13" style="fill:none;stroke:var(--accent);stroke-width:3"/><path d="M34 34l12 12" style="stroke:var(--accent);stroke-width:4;stroke-linecap:round"/></svg>',
+ bridge:'<svg viewBox="0 0 56 56" aria-hidden="true"><path d="M6 38h44M12 38V26M44 38V26M12 26q16-16 32 0" style="fill:none;stroke:var(--muted);stroke-width:3"/></svg>'
+};
+var ILL={
+ senior: function(){var n=['Entender','Investigar','Definir','Criar','Validar','Entregar'],o='<svg viewBox="0 0 420 130" role="img" aria-label="O condutor percorre as seis fases e avisa quando a fase 3 foi pulada">';
+   o+='<line x1="30" y1="50" x2="390" y2="50" style="stroke:var(--line);stroke-width:3"/>';
+   n.forEach(function(s,i){var x=30+i*72,c=i<3?'var(--prob)':'var(--sol)';o+='<circle cx="'+x+'" cy="50" r="13" style="fill:'+(i===2?'var(--bg)':c)+';stroke:'+c+';stroke-width:3'+(i===2?';stroke-dasharray:4 3':'')+'"/>'+txt(x,85,s,M,{anchor:'middle',fs:11});});
+   o+='<rect x="150" y="98" width="190" height="24" rx="6" style="fill:var(--sol-soft)"/>'+txt(245,114,'Pulou a fase 3? 1 pergunta e segue',T,{anchor:'middle',fs:11});
+   o+=txt(318,22,'você está aqui ↓',A,{anchor:'middle',fs:11,w:600});
+   return o+'</svg>';},
+ entender:function(){return '<svg viewBox="0 0 420 140" role="img" aria-label="Pedido com solução reescrito como problema, e as categorias do mapa de certezas">'+
+   '<rect x="10" y="14" width="150" height="46" rx="10" style="fill:var(--sol-soft)"/>'+txt(85,34,'“Faz uma central',T,{anchor:'middle'})+txt(85,50,'de notificações”',T,{anchor:'middle'})+
+   '<path d="M168 37h50" style="stroke:var(--muted);stroke-width:2"/><path d="M214 31l8 6-8 6" style="fill:none;stroke:var(--muted);stroke-width:2"/>'+
+   '<rect x="228" y="14" width="182" height="46" rx="10" style="fill:var(--prob-soft)"/>'+txt(319,34,'Que resultado esperamos?',T,{anchor:'middle'})+txt(319,50,'Que problema existe hoje?',T,{anchor:'middle'})+
+   ['Objetivos','Achismos','A descobrir','Armadilhas','Fora do escopo'].map(function(s,i){return '<rect x="'+(10+i*82)+'" y="84" width="76" height="40" rx="6" style="fill:var(--surface);stroke:var(--line)"/>'+txt(48+i*82,108,s,T,{anchor:'middle',fs:11});}).join('')+'</svg>';},
+ investigar:function(){var f=['Dados da empresa','Pesquisas anteriores','Voz do cliente','Gravações de sessão','Benchmark','Literatura'],o='<svg viewBox="0 0 420 170" role="img" aria-label="Ordem das fontes, da mais forte para a mais geral, sempre com a fonte citada">';
+   f.forEach(function(s,i){var w=380-i*48;o+='<rect x="'+(210-w/2)+'" y="'+(8+i*24)+'" width="'+w+'" height="20" rx="4" style="fill:'+(i<1?'var(--prob)':'var(--prob-soft)')+'"/>'+txt(210,22+i*24,(i+1)+'. '+s,i<1?'style="fill:#fff"':T,{anchor:'middle',fs:11});});
+   return o+txt(210,164,'[fonte: sistema › objeto · período] em todo dado',A,{anchor:'middle',fs:11,w:600})+'</svg>';},
+ definir:function(){return '<svg viewBox="0 0 420 150" role="img" aria-label="Cartão de hipótese com mudança, KPI, linha de base, sinal de erro e guarda">'+
+   '<rect x="10" y="8" width="400" height="134" rx="10" style="fill:var(--surface);stroke:var(--line)"/>'+
+   [['Acreditamos que','[mudança] para [público] gera [efeito]'],['KPI','38% → 48% em 30 dias'],['Linha de base','[fonte: Analytics · ago–out]'],['Erramos se','não subir ≥ 10 p.p.'],['Sem piorar','tickets, cancelamento']].map(function(r,i){return txt(24,32+i*24,r[0],i===3?S:P,{fs:12,w:600})+txt(140,32+i*24,r[1],T,{fs:12});}).join('')+'</svg>';},
+ timebox:function(){var R=[['Executar',[5,5,5,55,15,15]],['Explorar visual',[5,10,5,45,25,10]],['Investigar',[15,35,10,20,10,10]],['Descobrir',[10,25,10,25,20,10]]],C=['#0b5e58','#0f7c74','#3a9d94','#b8620e','#d07f2a','#8c4a0b'],o='<svg viewBox="0 0 420 130" role="img" aria-label="Distribuição do prazo por perfil de projeto">';
+   R.forEach(function(r,i){var x=110;o+=txt(10,22+i*28,r[0],T,{fs:12});r[1].forEach(function(p,j){var w=p*3;o+='<rect x="'+x+'" y="'+(10+i*28)+'" width="'+w+'" height="18" style="fill:'+C[j]+'"/>';x+=w;});});
+   return o+'</svg>';},
+ pesquisar:function(){var o='<svg viewBox="0 0 420 150" role="img" aria-label="Três cohorts de dez candidatos, com duas entrevistas ou três testes por cohort">',L=['Novas','Médias','Power users'];
+   L.forEach(function(s,c){o+=txt(10,28+c*40,s,T,{fs:12});for(var k=0;k<10;k++){var on=k<3,first=k<2;o+='<circle cx="'+(120+k*26)+'" cy="'+(24+c*40)+'" r="9" style="fill:'+(first?'var(--prob)':on?'var(--sol)':'var(--line)')+'"/>';}});
+   return o+'<circle cx="20" cy="138" r="6" '+P+'/>'+txt(32,142,'2 entrevistas',M,{fs:11})+'<circle cx="140" cy="138" r="6" '+S+'/>'+txt(152,142,'+1 no teste de usabilidade (NN/g: ≥ 3)',M,{fs:11})+'</svg>';},
+ heuristicas:function(){var L=[['CRÍTICO','impede a tarefa','var(--warn)'],['ALTO','atrapalha muito','var(--sol)'],['MÉDIO','atrito evitável','var(--accent)'],['BAIXO','refinamento','var(--muted)']],o='<svg viewBox="0 0 420 110" role="img" aria-label="Escala de severidade do pacote">';
+   L.forEach(function(l,i){o+='<rect x="'+(10+i*102)+'" y="10" width="96" height="44" rx="6" style="fill:'+l[2]+'"/>'+txt(58+i*102,37,l[0],'style="fill:#fff"',{anchor:'middle',fs:13,w:700})+txt(58+i*102,74,l[1],M,{anchor:'middle',fs:11})+txt(58+i*102,94,'Nielsen '+(4-i),M,{anchor:'middle',fs:10});});
+   return o+'</svg>';},
+ vieses:function(){return '<svg viewBox="0 0 420 160" role="img" aria-label="Os quatro pilares dos vieses e a pergunta ética">'+
+   [['Informação','excesso de informação'],['Ambiguidade','falta de significado'],['Tempo / ação','agir rápido'],['Memória','o que lembrar']].map(function(q,i){var x=10+(i%2)*205,y=8+Math.floor(i/2)*50;return '<rect x="'+x+'" y="'+y+'" width="195" height="42" rx="6" style="fill:var(--prob-soft)"/>'+txt(x+12,y+18,q[0],P,{fs:12,w:700})+txt(x+12,y+34,q[1],M,{fs:11});}).join('')+
+   '<rect x="10" y="112" width="400" height="40" rx="6" style="fill:var(--sol-soft)"/>'+txt(210,128,'O usuário faria a mesma escolha se entendesse',T,{anchor:'middle',fs:12})+txt(210,144,'o mecanismo? Não → dark pattern = CRÍTICO',T,{anchor:'middle',fs:12,w:600})+'</svg>';},
+ acessibilidade:function(){return '<svg viewBox="0 0 420 140" role="img" aria-label="Valores mínimos de contraste e de tamanho do alvo">'+
+   '<rect x="10" y="10" width="110" height="60" rx="6" style="fill:#1b2733"/><text x="65" y="47" text-anchor="middle" font-size="18" style="fill:#ffffff" font-weight="700">4.5:1</text>'+txt(65,90,'texto normal',M,{anchor:'middle',fs:11})+
+   '<rect x="130" y="10" width="110" height="60" rx="6" style="fill:#ffffff;stroke:var(--line)"/><rect x="155" y="28" width="60" height="24" rx="4" style="fill:none;stroke:#767676;stroke-width:2"/>'+txt(185,90,'borda/ícone 3:1',M,{anchor:'middle',fs:11})+
+   '<rect x="270" y="34" width="24" height="24" style="fill:var(--sol)"/>'+txt(282,90,'24px AA',M,{anchor:'middle',fs:11})+
+   '<rect x="330" y="14" width="44" height="44" style="fill:var(--prob)"/>'+txt(352,90,'44px ideal',M,{anchor:'middle',fs:11})+
+   txt(210,124,'Cor nunca sozinha: erro = ícone + texto',A,{anchor:'middle',fs:12,w:600})+'</svg>';},
+ ui:function(){var L=[['Baixa','rabisco · explorar'],['Média','wireframe · fluxo e palavras'],['Alta','visual real · testar e vender']],o='<svg viewBox="0 0 420 130" role="img" aria-label="Escada de fidelidade">';
+   L.forEach(function(l,i){var x=10+i*138,h=40+i*24;o+='<rect x="'+x+'" y="'+(100-h)+'" width="128" height="'+h+'" rx="6" style="fill:'+(i===2?'var(--sol)':'var(--sol-soft)')+'"/>'+txt(x+64,100-h+20,l[0],i===2?'style="fill:#fff"':T,{anchor:'middle',fs:13,w:700})+txt(x+64,120,l[1],M,{anchor:'middle',fs:10});});
+   return o+'</svg>';},
+ entregar:function(){var L=['Definir','Documentar','Planejar','Implementar','Testar'],o='<svg viewBox="0 0 420 110" role="img" aria-label="Cinco etapas do plano de mensuração">';
+   L.forEach(function(s,i){var x=10+i*82;o+='<rect x="'+x+'" y="20" width="74" height="36" rx="18" style="fill:'+(i===4?'var(--sol)':'var(--sol-soft)')+'"/>'+txt(x+37,43,s,i===4?'style="fill:#fff"':T,{anchor:'middle',fs:11,w:600});});
+   return o+txt(210,84,'toda hipótese aberta precisa de um evento antes do handoff',M,{anchor:'middle',fs:11})+'</svg>';},
+ contexto:function(){return '<svg viewBox="0 0 420 130" role="img" aria-label="Precedência: design system da empresa, depois contexto, depois o pacote">'+
+   '<polygon points="210,8 290,48 130,48" style="fill:var(--accent)"/>'+txt(210,40,'DS da empresa','style="fill:var(--bg)"',{anchor:'middle',fs:11,w:700})+
+   '<polygon points="130,52 290,52 340,84 80,84" style="fill:var(--prob-soft)"/>'+txt(210,73,'contexto/ (fontes de dados, produto…)',T,{anchor:'middle',fs:11})+
+   '<polygon points="80,88 340,88 390,120 30,120" style="fill:var(--bg);stroke:var(--line)"/>'+txt(210,109,'skills genéricas do Arsenal UX',M,{anchor:'middle',fs:11})+'</svg>';}
+};
+
+/* ---------- conteúdo da revisão ---------- */
+var SK=[
+ {k:'senior',ic:'senior',n:'parceiro-senior',f:'condutor',d:'Conduz a demanda pelas 6 fases, chama a skill dona de cada uma, mantém o projeto.md e fecha toda resposta com "onde estamos / próximo passo".',it:[
+  ['g1','Regras de comportamento C1 a C8','Pergunta antes (máx. 3–5); propositivo com dado citando a fonte; proporcional ao prazo; 2–3 opções com a recomendada; nível de evidência; ensina o porquê; aceita imperfeição; memória no projeto.md.','pratica'],
+  ['ps1','Fase pulada: 1 pergunta e segue','Se a pessoa pula para Criar sem problema ou métrica, o sênior faz uma pergunta, registra como "suposição não validada" e segue. Não repete o alerta.','pratica'],
+  ['ps2','Bloco no fim de toda resposta','"Onde estamos · Próximo passo · Registrado no projeto.md".','pratica'],
+  ['ps3','Postura de sênior','Evitar resposta rápida sem pensar, iniciativa sem "acabativa", forçar a própria solução; lançar pequeno também é pesquisa.','pos']]},
+ {k:'entender',ic:'p',n:'entender-demanda',f:'fase 1',d:'Transforma o pedido em problema: detecta quando o pedido já vem com a solução, pergunta o essencial, mapeia stakeholders e escreve o problem statement e o objetivo de discovery ("Decidir…").',it:[
+  ['ed1','Sinais de pedido-solução','Substantivo de interface ("tela", "central"), verbo de execução ("faz", "coloca") ou nenhum "porquê".','pratica'],
+  ['ed2','Ordem das perguntas','Por que agora → quem → o que acontece e como sabemos → quando/onde → prazo → já tentaram antes. Máximo de 5.','pratica'],
+  ['ed3','Mapa de certezas','Objetivos, achismos, a descobrir, armadilhas, fora do escopo, para depois. Achismos viram hipótese até ter evidência.','artigo'],
+  ['ed4','Problem statement em 3 partes','Contexto, afetados (inclusive o suporte), impacto para a empresa; até 5 frases e sem solução.','artigo']]},
+ {k:'investigar',ic:'p',n:'investigar-evidencias',f:'fase 2',d:'Busca o que já existe sem esperar pedido, cita a fonte de cada dado, triangula fontes, coloca o número em contexto e checa se ele faz sentido.',it:[
+  ['ie1','Ordem das fontes','Empresa → pesquisas anteriores → voz do cliente → gravações → benchmark → literatura. Para quando as perguntas estiverem respondidas.','pratica'],
+  ['ie2','Formato de citação','[fonte: sistema › objeto · período] + nível [empresa] [pesquisa] [estudo] [heurística] [opinião].','pratica'],
+  ['ie3','Itens próprios do checklist de sanidade','Tracking quebrado, filtros (bots, contas internas), segmentos misturados, ordem de grandeza, explicação alternativa.','pratica']]},
+ {k:'definir',ic:'p',n:'definir-hipoteses',f:'fase 3',d:'Troca a feature por resultado, liga objetivo, KPI e estratégia, escreve hipóteses que podem ser derrubadas e prioriza pelo risco.',it:[
+  ['dh1','Formato da hipótese','Além do Lean UX: linha de base com fonte, meta, "erramos se…" obrigatório e métrica de guarda.','pratica'],
+  ['dh2','Pontuação 1 a 3','Impacto × confiança × esforço; começar pelo maior impacto com menor confiança.','pratica'],
+  ['dh3','Como testar pela confiança','Baixa → protótipo e teste antes de construir; média → teste ou segmento pequeno; alta e reversível → lançar e medir.','pratica'],
+  ['dh4','Os 5 riscos de Cagan','Valor, usabilidade, viabilidade técnica, viabilidade de negócio, ética.','artigo']]},
+ {k:'timebox',ic:'p',n:'planejar-timebox',f:'fase 3',d:'Classifica o projeto (problema claro ou obscuro × solução conhecida ou nova), distribui o prazo, marca os checkpoints e decide entre pesquisar antes ou lançar e medir.',it:[
+  ['tb1','Porcentagens por perfil','Executar 5/5/5/55/15/15 · Explorar visual 5/10/5/45/25/10 · Investigar 15/35/10/20/10/10 · Descobrir 10/25/10/25/20/10.','pratica'],
+  ['tb2','Checkpoints por prazo','3 dias → 1 (conceito) · 1 semana → 2 (conceito + hi-fi com usuários) · 3 semanas → 3 a 4.','pratica'],
+  ['tb3','Quando lançar e medir','Reversível, custo de erro baixo, há tráfego, prazo não cabe pesquisa. Pesquisar antes se errar é caro ou o risco é valor/viabilidade.','pratica'],
+  ['tb4','Regra de corte','Corte escopo antes de cortar validação quando a solução é nova. Nunca corte a métrica e o evento que a mede.','pratica']]},
+ {k:'pesquisar',ic:'s',n:'pesquisar',f:'fases 2 e 5',d:'Escolhe o método pela pergunta e pelo prazo, recruta por cohort a partir dos dados, define a amostra, gera roteiro e consentimento e evita os vieses do pesquisador.',it:[
+  ['pq1','Metas por cohort','2 conversas por cohort em entrevista exploratória; 3 por cohort em teste de usabilidade (o NN/g pede ≥ 3 quando há 3 grupos ou mais).','pratica'],
+  ['pq2','Tempo e custo de cada método','Estimativas da matriz (ex.: guerrilha 1 dia, moderado 3–5 dias, diário 2–6 semanas).','pratica'],
+  ['pq3','Quantos participantes','5 em público homogêneo; 3–4 por grupo com 2 grupos; 20 em teste quantitativo; 15 em card sorting.','artigo']]},
+ {k:'heuristicas',ic:'lens',n:'heuristicas',f:'lente',d:'Revisa telas com as 10 heurísticas de Nielsen, as 20 Leis de UX, Gestalt e memória, com trade-off e "como medir" em cada achado.',it:[
+  ['g2','Escala de severidade do pacote','CRÍTICO / ALTO / MÉDIO / BAIXO, usada em todas as lentes.','pratica'],
+  ['he1','Equivalência com Nielsen 0–4','4 = CRÍTICO · 3 = ALTO · 2 = MÉDIO · 1 = BAIXO; graduar por frequência, impacto e persistência.','externo'],
+  ['he2','Ordem das lentes na revisão','Nielsen → percepção e hierarquia → carga cognitiva → Leis de UX que expliquem o achado.','pratica']]},
+ {k:'vieses',ic:'lens',n:'vieses-cognitivos',f:'lente',d:'Aplica vieses a favor do usuário, audita dark patterns e aponta vieses do próprio time. Inclui o Framework CBB e o roteiro de experimento em 8 etapas do M12.',it:[
+  ['vc1','Pergunta ética central','"O usuário faria a mesma escolha se entendesse o mecanismo, e consegue desfazer fácil?"','pratica'],
+  ['vc2','Dark pattern é sempre CRÍTICO','Padrão pré-marcado para o negócio, escassez falsa, âncora falsa, confirmshaming.','pratica'],
+  ['vc3','Colunas "use a favor" e "risco" do catálogo','Exemplos de uso ético e de abuso para cada viés do curso.','pratica']]},
+ {k:'acessibilidade',ic:'lens',n:'acessibilidade',f:'lente',d:'Checa WCAG 2.2 AA e a ABNT NBR 17225 por componente, diz quem corrige cada achado e manda exclusão para o topo.',it:[
+  ['ac1','Meta padrão AA','A menos que a empresa exija outra coisa.','pratica'],
+  ['ac2','Alvo de 44×44 px no mobile','A WCAG AA pede 24×24; 44 é recomendação do pacote para ações principais.','pratica'],
+  ['ac3','Exclusão é sempre CRÍTICO','Se alguém não consegue perceber, operar ou entender a tarefa principal.','pratica']]},
+ {k:'ui',ic:'s',n:'ui-craft',f:'fase 4',d:'Escolhe padrão de tela e fidelidade, usa o DS antes de inventar, aplica cor, tipografia e componentes e cobre todos os estados da tela.',it:[
+  ['ui1','Corpo de texto no mobile','O M13 diz 12 px; Apple e Google pedem mais. Proposta: corpo ≥ 16 px e 12 px só para legendas.','pratica'],
+  ['ui2','Quantas variações','1 no perfil Executar; 2 a 3 em Explorar visual e Descobrir.','pratica'],
+  ['ui3','Checklist de estados','Vazio, carregando, sucesso, erro, parcial, sem permissão, offline, conteúdo extremo, dark mode, responsivo.','pratica']]},
+ {k:'entregar',ic:'s',n:'entregar-e-medir',f:'fase 6',d:'Prepara o handoff com critérios de pronto, monta o plano de mensuração antes do lançamento e fecha as hipóteses depois.',it:[
+  ['em1','Evento obrigatório por hipótese','Nenhuma hipótese aberta vai para handoff sem evento ou fonte de medição e sem linha de base registrada.','pratica'],
+  ['em2','Modelo de especificação de evento','Evento (verbo no passado) · quando dispara · propriedades · hipótese/KPI · responsável.','pratica'],
+  ['em3','Plano de mensuração em 5 etapas','Definir, documentar, planejar, implementar, testar e refinar.','pos']]},
+ {k:'contexto',ic:'bridge',n:'contexto-empresa',f:'ponte',d:'Lê a pasta contexto/ e diz às outras skills que fontes de dados, design system e métricas existem. É a única que muda quando o pacote for para o trabalho.',it:[
+  ['ce1','Precedência','DS da empresa > contexto/ > skills do pacote. Convenção deliberada do DS não é achado.','pratica'],
+  ['ce2','Arquivos de contexto','empresa, produto, fontes-de-dados (o principal), design-system, stakeholders, pesquisas.','pratica'],
+  ['g3','Estrutura do projeto.md','Problema · evidências · hipóteses · plano · decisões · suposições não validadas · resultado.','pratica']]}
+];
+var ILLMAP={senior:'senior',entender:'entender',investigar:'investigar',definir:'definir',timebox:'timebox',pesquisar:'pesquisar',heuristicas:'heuristicas',vieses:'vieses',acessibilidade:'acessibilidade',ui:'ui',entregar:'entregar',contexto:'contexto'};
+var ORG={pos:['pós',''],artigo:['artigo',''],externo:['externo','externo'],pratica:['prática','pratica']};
+var ALL=[];SK.forEach(function(s){s.it.forEach(function(i){ALL.push({id:i[0],org:i[3]});});});
+
+/* ---------- estado ---------- */
+var state={}, db=null, mode='loading', filter='todos', chains={};
+var LSK='arsenal-revisao';
+function lsLoad(){try{return JSON.parse(localStorage.getItem(LSK)||'{}')}catch(e){return {}}}
+function lsSave(){try{localStorage.setItem(LSK,JSON.stringify(state))}catch(e){}}
+
+function render(){
+  var list=document.getElementById('rv-list'); if(!list.childElementCount) build();
+  ALL.forEach(function(a){
+    var el=document.getElementById('it-'+a.id); if(!el) return;
+    var s=state[a.id]||{}; el.dataset.st=s.status||'';
+    el.querySelectorAll('.st button').forEach(function(b){b.setAttribute('aria-pressed', String(b.dataset.v===s.status));});
+    var ta=el.querySelector('textarea'); if(document.activeElement!==ta && typeof s.note==='string' && ta.value!==s.note) ta.value=s.note;
+    var show = filter==='todos' || (filter==='pendente'&&!s.status) || (filter===s.status) || (filter==='pratica'&&a.org==='pratica');
+    el.hidden=!show;
+  });
+  document.querySelectorAll('.rv-skill').forEach(function(c){c.hidden=!c.querySelector('.item:not([hidden])');});
+  var done=ALL.filter(function(a){return state[a.id]&&state[a.id].status}).length, n=ALL.length;
+  var c={ok:0,ajustar:0,duvida:0}; ALL.forEach(function(a){var st=state[a.id]&&state[a.id].status; if(st) c[st]++;});
+  document.getElementById('rv-count').textContent=done+' de '+n+' revisados';
+  document.getElementById('rv-break').textContent=c.ok+' aprovados · '+c.ajustar+' para ajustar · '+c.duvida+' com dúvida';
+  var p=document.getElementById('rv-prog'); p.setAttribute('aria-valuenow',Math.round(done/n*100)); p.querySelector('i').style.width=(done/n*100)+'%';
+}
+function build(){
+  var list=document.getElementById('rv-list');
+  list.innerHTML=SK.map(function(s){
+    return '<article class="rv-skill"><div class="rv-head">'+ICON[s.ic]+'<div><h3>'+s.n+'<span class="chip">'+s.f+'</span></h3><p style="color:var(--muted);font-size:15px">'+s.d+'</p></div></div>'+
+     '<div class="rv-body"><div class="ill">'+ILL[ILLMAP[s.k]]()+'</div><div class="items">'+
+     s.it.map(function(i){var o=ORG[i[3]];return '<div class="item" id="it-'+i[0]+'"><div style="display:flex;gap:8px;align-items:flex-start;justify-content:space-between"><h4>'+i[1]+'</h4><span class="org '+o[1]+'">'+o[0]+'</span></div><p>'+i[2]+'</p>'+
+       '<div class="st" role="group" aria-label="Decisão sobre '+i[1].replace(/"/g,'')+'"><button type="button" data-v="ok">Aprovar</button><button type="button" data-v="ajustar">Ajustar</button><button type="button" data-v="duvida">Dúvida</button></div>'+
+       '<label class="saved" for="nt-'+i[0]+'" style="font-size:12px">Comentário</label><textarea id="nt-'+i[0]+'" placeholder="O que você mudaria aqui?"></textarea><span class="saved" aria-live="polite"></span></div>';}).join('')+
+     '</div></div></article>';
+  }).join('');
+  list.querySelectorAll('.item').forEach(function(el){
+    var id=el.id.slice(3);
+    el.querySelectorAll('.st button').forEach(function(b){b.addEventListener('click',function(){
+      var cur=(state[id]||{}).status; var v=cur===b.dataset.v?'':b.dataset.v;
+      save(id,{status:v}, el);
+    });});
+    var ta=el.querySelector('textarea');
+    ta.addEventListener('blur',function(){ if(ta.value!==((state[id]||{}).note||'')) save(id,{note:ta.value}, el); });
+  });
+}
+function save(id,patch,el){
+  var next=Object.assign({status:'',note:''},state[id]||{},patch,{at:new Date().toISOString()});
+  state[id]=next; render();
+  var msg=el.querySelector('.saved[aria-live]');
+  if(mode!=='db'){lsSave(); msg.textContent='Salvo neste navegador'; return;}
+  msg.textContent='Salvando…';
+  chains[id]=(chains[id]||Promise.resolve()).then(function(){return db.doc('revisao/'+id).set(next);}).then(function(){msg.textContent='Salvo';},function(e){
+    msg.textContent= e&&e.code==='invalid_argument' ? 'Sem permissão para salvar aqui' : 'Não salvou. Tente de novo.';
+  });
+}
+
+/* filtros */
+document.querySelectorAll('.filters button').forEach(function(b){b.addEventListener('click',function(){
+  filter=b.dataset.f; document.querySelectorAll('.filters button').forEach(function(x){x.setAttribute('aria-pressed',String(x===b));}); render();
+});});
+
+/* conexão */
+function notice(t){var n=document.getElementById('rv-notice'); n.textContent=t; n.hidden=!t;}
+render();
+(async function(){
+  var timer=setTimeout(function(){ document.getElementById('rv-sync').textContent='Conectando ao armazenamento…'; },3000);
+  try{ db = window.claude && window.claude.use ? await window.claude.use('db') : null; }catch(e){ db=null; }
+  if(!db){ clearTimeout(timer); mode='local'; state=lsLoad(); notice('O armazenamento compartilhado não está disponível nesta visualização. As marcações ficam só neste navegador.'); document.getElementById('rv-sync').textContent=''; render(); return; }
+  mode='db';
+  var slow=setTimeout(function(){ document.getElementById('rv-sync').textContent='Ainda carregando as marcações salvas…'; },10000);
+  db.collection('revisao').onSnapshot(function(snap){
+    if(!snap.metadata.fromCache){ clearTimeout(slow); clearTimeout(timer); document.getElementById('rv-sync').textContent='Marcações salvas no artefato'; }
+    snap.docs.forEach(function(d){ var v=d.data(); if(v) state[d.id]=v; });
+    render();
+  }, function(e){ clearTimeout(slow); clearTimeout(timer); document.getElementById('rv-sync').textContent='Não consegui carregar as marcações salvas.'; });
+})();
+</script>

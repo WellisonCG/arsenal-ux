@@ -58,3 +58,6 @@ Exemplo do M9: na Amazon Brasil, "Identifique-se" virou "Faça seu login", e "Se
 ```
 | Onde | Antes | Depois | Por quê (característica / regra) |
 ```
+
+## Referências
+- `references/fontes.md`: base no content design do DS, material da pós e links

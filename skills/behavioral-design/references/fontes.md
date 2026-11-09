@@ -23,6 +23,15 @@
 | Behavioral Scientist – Defaults | Jachimowicz et al., "Defaults Are Not the Same by Default", https://behavioralscientist.org/defaults-are-not-the-same-by-default/ | meta-análise: 58 estudos, opção padrão escolhida cerca de 27% mais vezes, efeito varia |
 | NN/g – Priming | Raluca Budiu, https://www.nngroup.com/articles/priming/ | priming na interface e na pesquisa |
 
+## Fontes de busca fora da pós
+| Fonte | Para quê | Origem |
+|---|---|---|
+| Coglode, https://www.coglode.com/ | vieses em cartões curtos, com exemplos práticos aplicados ao design | `[indicação do usuário]` |
+| Growth.Design, https://growth.design/case-studies | estudos de caso de vieses em interfaces reais | `[externo]` |
+| The Decision Lab, https://thedecisionlab.com/biases | fonte principal para vieses fora do catálogo | `[pós]` |
+
+A lista completa, por área, está em `uxpert/references/fontes-confiaveis.md`.
+
 ## Referenciado mas não lido
 - The Guardian, crítica ao nudge na pandemia; HBR, cultura de experimentação; outros casos (Pepsodent, TikTok). São contexto, não regra aplicável.
 - The Decision Lab (confirmação, enquadramento): o M12 já cobre esses vieses.

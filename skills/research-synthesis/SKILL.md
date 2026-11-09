@@ -50,3 +50,4 @@ Não respondido: <…>
 
 ## Referências
 - `references/sintese.md`: debriefing, documentação, análise, classificação, apresentação
+- `references/fontes.md`

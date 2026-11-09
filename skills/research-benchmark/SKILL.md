@@ -52,3 +52,6 @@ Lacunas / oportunidades: <…>
 - **Não copie o contexto junto com a tela.** O que funciona para um público e um modelo de negócio pode não funcionar para o nosso.
 - **Conta a convenção do mercado, não só um líder.** Um produto famoso não é prova de padrão.
 - **O benchmark pode embasar dark patterns.** Passe o resultado pela `behavioral-design`.
+
+## Referências
+- `references/fontes.md`: onde buscar o benchmark e as duas frentes

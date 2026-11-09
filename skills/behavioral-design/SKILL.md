@@ -32,6 +32,7 @@ Esta skill é **transversal**. Ela embasa todas as fases, não só a UI:
 - **Além da base:** existem mais de 200 vieses mapeados `[pós: M12]`. Busque nas fontes de `uxpert/references/fontes-confiaveis.md`:
   - **principal:** The Decision Lab;
   - **apoio:** Behavioral Scientist e o estudo original no Google Acadêmico;
+  - **aplicado ao design:** Coglode (coglode.com), com vieses em cartões curtos e exemplos práticos em produto `[indicação do usuário]`, e Growth.Design, com estudos de caso em interfaces reais `[externo]`. Use os dois para propor a aplicação, e o estudo original para provar o efeito;
   - **para achar o termo:** a Wikipedia e o Codex, só como índice.
 - **Sempre:** cite o link, marque `[externo]` e avise quando um viés tiver problema de replicação.
 

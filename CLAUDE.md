@@ -49,7 +49,7 @@ Depois disso: **testar com demandas reais** e ajustar.
 - **Mapa do processo** (versão antiga, já desatualizada): https://claude.ai/artifact/KDHzatLun7duKuJ9cBfRoi, cujo código está em `processo.html`.
 
 ## O que NÃO está no repositório
-- **`_fontes/`**, o material da pós (PDFs, slides). Ele é licenciado para uso pessoal e fica só no computador de origem. As skills já trazem a síntese desse material, com a origem marcada em cada bloco: `[pós: M4]`, `[artigo: …]`, `[prática]` ou `[externo]`. Cada skill tem também um `references/fontes.md`.
+- **`_fontes/`**, o material da pós (PDFs, slides). Ele é licenciado para uso pessoal e fica só no computador de origem. As skills já trazem a síntese desse material, com a origem marcada em cada bloco: `[pós: M4]`, `[artigo: …]`, `[prática]` ou `[externo]`. Cada skill tem também um `references/fontes.md` (menos a `context-company`, que só tem templates, e o `uxpert`, que tem o `fontes-confiaveis.md`).
 - O histórico de conversa. O que importa dele está resumido neste arquivo e no `PLANO.md`.
 
 ## Convenções ao editar

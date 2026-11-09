@@ -43,6 +43,9 @@ Pacote de skills de design. O **`uxpert`** é o especialista que conduz cada dem
 - `/revisar-tela`: lentes em paralelo (heurísticas, acessibilidade, vieses, UX writing)
 - `/handoff`: entrega e plano de medição, em paralelo
 
+## Notas de atualização
+O que mudou em cada versão está no [`CHANGELOG.md`](CHANGELOG.md).
+
 ## Estrutura
 ```
 .claude-plugin/   manifesto do plugin
